@@ -4,6 +4,7 @@ import { useAuth } from '../lib/AuthProvider.jsx';
 import ThemeToggle from './ThemeToggle.jsx';
 
 export default function Settings() {
+  const { mode } = useAuth();
   const [settings, setSettings] = usePersistentState('timer:settings', {
     focusMin: 25,
     shortBreakMin: 5,
