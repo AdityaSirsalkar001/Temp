@@ -80,14 +80,7 @@ body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI
 .settings-label { color: var(--muted); font-weight: 600; }
 .settings-control { width: 100%; }
 
-/* Planner calendar-like styles */
-.planner-grid { position: relative; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-.planner-grid::before { content: ""; position: absolute; inset: 0; background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 47px, rgba(0,0,0,.06) 48px, rgba(0,0,0,.06) 49px); opacity: .14; pointer-events: none; }
-html[data-theme="dark"] .planner-grid::before { opacity: .22; }
-.planner-time { font-variant-numeric: tabular-nums; }
-.planner-cell { border: 0; background: transparent; outline: none; box-shadow: none; transition: background-color .2s ease, box-shadow .2s ease; }
-.planner-cell:focus { background: rgba(37,99,235,.08); box-shadow: inset 0 0 0 2px var(--primary); }
-html[data-theme="dark"] .planner-cell:focus { background: rgba(96,165,250,.10); }
+/* Removed old planner styles */
 .panel-title { margin: 0 0 12px; font-size: 16px; font-weight: 700; }
 
 .input, .select, .textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 10px; }
