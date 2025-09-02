@@ -15,7 +15,7 @@ export default function TodoList() {
   const [text, setText] = useState('');
   const [filter, setFilter] = useState('all');
   const [project, setProject] = usePersistentState('todos:project', 'all');
-  const [tagsFilter, setTagsFilter] = useState('');
+  // Removed tagsFilter for simplicity
 
   function addItem() {
     const t = text.trim();
