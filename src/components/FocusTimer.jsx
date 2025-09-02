@@ -48,6 +48,7 @@ export default function FocusTimer() {
     autoStartFocus: true
   });
 
+  const [showSettings, setShowSettings] = useState(false);
   const [modeType, setModeType] = usePersistentState('timer:type', 'timer'); // 'timer' | 'stopwatch'
 
   // Timer state
@@ -59,7 +60,7 @@ export default function FocusTimer() {
   // Stopwatch state
   const [swElapsed, setSwElapsed] = usePersistentState('stopwatch:elapsed', 0);
   const [swRunning, setSwRunning] = usePersistentState('stopwatch:running', false);
-  const [swActive, setSwActive] = usePersistentState('stopwatch:active', false); // counts a session when stopping
+  const [swActive, setSwActive] = usePersistentState('stopwatch:active', false);
 
   // Fullscreen state
   const wrapRef = useRef(null);
@@ -69,6 +70,7 @@ export default function FocusTimer() {
     document.addEventListener('fullscreenchange', onFs);
     return () => document.removeEventListener('fullscreenchange', onFs);
   }, []);
+  
   function toggleFullscreen() {
     if (!document.fullscreenElement) {
       wrapRef.current?.requestFullscreen?.();
@@ -101,7 +103,8 @@ export default function FocusTimer() {
     incTodaySeconds(1);
   }, 1000);
 
-  function handleComplete() { if (loadLS('settings:sound', true)) playSessionEnd();
+  function handleComplete() { 
+    if (loadLS('settings:sound', true)) playSessionEnd();
     setRunning(false);
     if (mode === 'focus') {
       incTodaySessions();
@@ -141,60 +144,221 @@ export default function FocusTimer() {
 
   const title = useMemo(() => mode === 'focus' ? 'Focus' : mode === 'short' ? 'Short Break' : 'Long Break', [mode]);
 
-  // ring
-  const radius = 90; const circumference = 2 * Math.PI * radius;
-  const progress = modeType === 'timer' ? Math.max(0, Math.min(1, remaining / total)) : 1 - ((swElapsed % 60) / 60);
-  const dash = circumference; const offset = dash * (1 - progress);
+  // Progress calculation
+  const progress = modeType === 'timer' ? (total - remaining) / total : (swElapsed % 3600) / 3600;
+  const progressPercent = Math.max(0, Math.min(100, progress * 100));
 
   function stopTimer() { setRunning(false); setRemaining(total); if (loadLS('settings:sound', true)) playStop(); }
-  function stopStopwatch() { if (swElapsed > 0 && swActive) { incTodaySessions(); } setSwRunning(false); setSwElapsed(0); setSwActive(false); if (loadLS('settings:sound', true)) playStop(); }
+  function stopStopwatch() { 
+    if (swElapsed > 0 && swActive) { incTodaySessions(); } 
+    setSwRunning(false); setSwElapsed(0); setSwActive(false); 
+    if (loadLS('settings:sound', true)) playStop(); 
+  }
+
+  // Get theme class based on mode
+  const getThemeClass = () => {
+    if (modeType === 'stopwatch') return 'theme-stopwatch';
+    return mode === 'focus' ? 'theme-focus' : mode === 'short' ? 'theme-break' : 'theme-long-break';
+  };
+
+  function updateSettings(newSettings) {
+    setSettings(newSettings);
+    // Reset timer if not running
+    if (!running && modeType === 'timer') {
+      const newTotal = mode === 'focus' ? newSettings.focusMin * 60 : 
+                     mode === 'short' ? newSettings.shortBreakMin * 60 : 
+                     newSettings.longBreakMin * 60;
+      setRemaining(newTotal);
+    }
+  }
 
   return (
-    <div ref={wrapRef} className={isFs ? 'focus-fullscreen' : 'focus-compact'}>
-      <div className="panel">
-        <h3 className="panel-title">Focus Timer</h3>
-        <div className="section">
-          <div className="timer-modes">
-            <button className={`mode-btn ${modeType === 'timer' ? 'active' : ''}`} onClick={() => setModeType('timer')}>Timer</button>
-            <button className={`mode-btn ${modeType === 'stopwatch' ? 'active' : ''}`} onClick={() => setModeType('stopwatch')}>Stopwatch</button>
+    <div ref={wrapRef} className={`timer-container ${getThemeClass()} ${isFs ? 'fullscreen-mode' : ''}`}>
+      <div className={`timer-panel ${isFs ? 'fullscreen-panel' : 'panel'}`}>
+        {!isFs && (
+          <div className="timer-header">
+            <h3 className="panel-title">🎯 Focus Timer</h3>
+            <button 
+              className="settings-btn"
+              onClick={() => setShowSettings(!showSettings)}
+              title="Timer Settings"
+            >
+              ⚙️
+            </button>
           </div>
+        )}
+
+        {isFs && (
+          <div className="fullscreen-header">
+            <div className="fs-title">{title}</div>
+            <button className="exit-fs-btn" onClick={toggleFullscreen}>✕</button>
+          </div>
+        )}
+
+        {/* Settings Panel */}
+        {showSettings && !isFs && (
+          <div className="settings-panel">
+            <h4>Timer Settings</h4>
+            <div className="settings-grid">
+              <div className="setting-item">
+                <label>Focus Time</label>
+                <input 
+                  type="number" 
+                  min="1" 
+                  max="120" 
+                  value={settings.focusMin}
+                  onChange={(e) => updateSettings({...settings, focusMin: parseInt(e.target.value) || 25})}
+                  className="setting-input"
+                />
+                <span>minutes</span>
+              </div>
+              <div className="setting-item">
+                <label>Short Break</label>
+                <input 
+                  type="number" 
+                  min="1" 
+                  max="30" 
+                  value={settings.shortBreakMin}
+                  onChange={(e) => updateSettings({...settings, shortBreakMin: parseInt(e.target.value) || 5})}
+                  className="setting-input"
+                />
+                <span>minutes</span>
+              </div>
+              <div className="setting-item">
+                <label>Long Break</label>
+                <input 
+                  type="number" 
+                  min="1" 
+                  max="60" 
+                  value={settings.longBreakMin}
+                  onChange={(e) => updateSettings({...settings, longBreakMin: parseInt(e.target.value) || 15})}
+                  className="setting-input"
+                />
+                <span>minutes</span>
+              </div>
+            </div>
+            <div className="preset-buttons">
+              <button onClick={() => updateSettings({...settings, focusMin: 25, shortBreakMin: 5, longBreakMin: 15})} className="preset-btn">25/5/15</button>
+              <button onClick={() => updateSettings({...settings, focusMin: 50, shortBreakMin: 10, longBreakMin: 20})} className="preset-btn">50/10/20</button>
+              <button onClick={() => updateSettings({...settings, focusMin: 90, shortBreakMin: 15, longBreakMin: 30})} className="preset-btn">90/15/30</button>
+            </div>
+          </div>
+        )}
+
+        <div className="timer-content">
+          {!isFs && (
+            <div className="timer-modes">
+              <button className={`mode-btn ${modeType === 'timer' ? 'active' : ''}`} onClick={() => setModeType('timer')}>Timer</button>
+              <button className={`mode-btn ${modeType === 'stopwatch' ? 'active' : ''}`} onClick={() => setModeType('stopwatch')}>Stopwatch</button>
+            </div>
+          )}
 
           {modeType === 'timer' && (
             <>
-              <div className="timer-types">
-                <button className={`type-btn ${mode === 'focus' ? 'active' : ''}`} onClick={() => switchMode('focus')}>Focus ({settings.focusMin}m)</button>
-                <button className={`type-btn ${mode === 'short' ? 'active' : ''}`} onClick={() => switchMode('short')}>Break ({settings.shortBreakMin}m)</button>
-              </div>
+              {!isFs && (
+                <div className="timer-types">
+                  <button className={`type-btn ${mode === 'focus' ? 'active' : ''}`} onClick={() => switchMode('focus')}>
+                    Focus ({settings.focusMin}m)
+                  </button>
+                  <button className={`type-btn ${mode === 'short' ? 'active' : ''}`} onClick={() => switchMode('short')}>
+                    Break ({settings.shortBreakMin}m)
+                  </button>
+                  <button className={`type-btn ${mode === 'long' ? 'active' : ''}`} onClick={() => switchMode('long')}>
+                    Long ({settings.longBreakMin}m)
+                  </button>
+                </div>
+              )}
+
               <div className="timer-display">
-                <div className="timer-time">{fmt(remaining)}</div>
-                <div className="timer-progress">
-                  <div className="progress-bar" style={{ width: `${(remaining / total) * 100}%` }}></div>
+                <div className="timer-circle">
+                  <svg className="progress-ring" width="200" height="200">
+                    <circle className="progress-track" cx="100" cy="100" r="90"></circle>
+                    <circle 
+                      className="progress-fill" 
+                      cx="100" 
+                      cy="100" 
+                      r="90"
+                      style={{
+                        strokeDasharray: `${2 * Math.PI * 90}`,
+                        strokeDashoffset: `${2 * Math.PI * 90 * (1 - progress)}`,
+                      }}
+                    ></circle>
+                  </svg>
+                  <div className="timer-time">{fmt(remaining)}</div>
                 </div>
-                <div className="timer-controls">
-                  {!running ? (
-                    <button className="btn success" onClick={start}>Start Focus</button>
-                  ) : (
-                    <button className="btn secondary" onClick={pause}>Pause</button>
-                  )}
-                  <button className="btn secondary" onClick={reset}>Reset</button>
-                </div>
+                
+                {!isFs && (
+                  <div className="timer-info">
+                    <div className="round-info">Round {round} / {settings.roundsUntilLong}</div>
+                    <div className="mode-info">{title}</div>
+                  </div>
+                )}
               </div>
             </>
           )}
 
           {modeType === 'stopwatch' && (
             <div className="timer-display">
-              <div className="timer-time">{fmt(swElapsed)}</div>
-              <div className="timer-controls">
-                {!swRunning ? (
-                  <button className="btn success" onClick={swStart}>Start</button>
-                ) : (
-                  <button className="btn secondary" onClick={swPause}>Pause</button>
-                )}
-                <button className="btn secondary" onClick={swReset}>Reset</button>
+              <div className="timer-circle">
+                <svg className="progress-ring" width="200" height="200">
+                  <circle className="progress-track" cx="100" cy="100" r="90"></circle>
+                  <circle 
+                    className="progress-fill" 
+                    cx="100" 
+                    cy="100" 
+                    r="90"
+                    style={{
+                      strokeDasharray: `${2 * Math.PI * 90}`,
+                      strokeDashoffset: `${2 * Math.PI * 90 * (1 - progress)}`,
+                    }}
+                  ></circle>
+                </svg>
+                <div className="timer-time">{fmt(swElapsed)}</div>
               </div>
             </div>
           )}
+
+          <div className="timer-controls">
+            {modeType === 'timer' ? (
+              <>
+                {!running ? (
+                  <button className="btn primary large" onClick={start}>
+                    ▶️ Start {mode === 'focus' ? 'Focus' : 'Break'}
+                  </button>
+                ) : (
+                  <button className="btn secondary large" onClick={pause}>
+                    ⏸️ Pause
+                  </button>
+                )}
+                <button className="btn secondary" onClick={reset}>🔄 Reset</button>
+                {!isFs && (
+                  <button className="btn focus-mode" onClick={toggleFullscreen}>
+                    🎯 Focus Mode
+                  </button>
+                )}
+                {isFs && (
+                  <button className="btn danger" onClick={stopTimer}>⏹️ Stop</button>
+                )}
+              </>
+            ) : (
+              <>
+                {!swRunning ? (
+                  <button className="btn primary large" onClick={swStart}>▶️ Start</button>
+                ) : (
+                  <button className="btn secondary large" onClick={swPause}>⏸️ Pause</button>
+                )}
+                <button className="btn secondary" onClick={swReset}>🔄 Reset</button>
+                {!isFs && (
+                  <button className="btn focus-mode" onClick={toggleFullscreen}>
+                    🎯 Focus Mode
+                  </button>
+                )}
+                {isFs && (
+                  <button className="btn danger" onClick={stopStopwatch}>⏹️ Stop</button>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>
