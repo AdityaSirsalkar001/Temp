@@ -173,7 +173,7 @@ export default function FocusTimer() {
   }
 
   return (
-    <div ref={wrapRef} className={`timer-container ${getThemeClass()} ${isFs ? 'fullscreen-mode' : ''}`}>
+    <div ref={wrapRef} className={`timer-container ${getThemeClass()} ${isFs ? 'fullscreen-mode' : ''} ${(running || swRunning) ? 'running' : ''} ${remaining === 0 ? 'completed' : ''}`}>
       <div className={`timer-panel ${isFs ? 'fullscreen-panel' : 'panel'}`}>
         {!isFs && (
           <div className="timer-header">
