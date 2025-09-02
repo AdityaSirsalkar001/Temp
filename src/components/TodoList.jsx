@@ -62,11 +62,8 @@ export default function TodoList() {
     let list = items;
     if (filter === 'active') list = list.filter(i => !i.done);
     if (filter === 'done') list = list.filter(i => i.done);
-    if (project !== 'all') list = list.filter(i => i.project === project);
-    const tags = tagsFilter.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
-    if (tags.length) list = list.filter(i => (i.tags||[]).some(t => tags.includes(t.toLowerCase())));
     return list;
-  }, [items, filter, project, tagsFilter]);
+  }, [items, filter]);
 
   return (
     <div className="panel">
