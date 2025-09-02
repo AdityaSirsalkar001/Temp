@@ -324,12 +324,19 @@ export default function FocusTimer() {
             <div className="timer-display">
               <div className="timer-circle">
                 <svg className="progress-ring" width="200" height="200">
+                  <defs>
+                    <linearGradient id="stopwatchGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#14b8a6" />
+                      <stop offset="100%" stopColor="#06b6d4" />
+                    </linearGradient>
+                  </defs>
                   <circle className="progress-track" cx="100" cy="100" r="90"></circle>
-                  <circle 
-                    className="progress-fill" 
-                    cx="100" 
-                    cy="100" 
+                  <circle
+                    className="progress-fill"
+                    cx="100"
+                    cy="100"
                     r="90"
+                    stroke="url(#stopwatchGradient)"
                     style={{
                       strokeDasharray: `${2 * Math.PI * 90}`,
                       strokeDashoffset: `${2 * Math.PI * 90 * (1 - progress)}`,
