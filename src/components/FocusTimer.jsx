@@ -345,7 +345,9 @@ export default function FocusTimer() {
                     }}
                   ></circle>
                 </svg>
-                <div className="timer-time">{fmt(swElapsed)}</div>
+                <div className={`timer-time ${swElapsed > 0 && swElapsed % 60 === 0 ? 'warning' : ''}`}>
+                  {fmt(swElapsed)}
+                </div>
               </div>
             </div>
           )}
