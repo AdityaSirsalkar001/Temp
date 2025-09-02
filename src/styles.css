@@ -114,19 +114,470 @@ body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI
 
 /* Removed duplicate planner styles */
 
-/* Compact Timer Styles */
-.focus-compact .panel { margin-bottom: 0; }
-.timer-modes { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; }
-.timer-types { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; }
-.mode-btn, .type-btn { background: var(--panel); color: var(--muted); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; }
-.mode-btn:hover, .type-btn:hover { color: var(--text); background: var(--border); }
-.mode-btn.active, .type-btn.active { background: var(--primary); color: var(--primary-contrast); border-color: var(--primary); }
+/* Enhanced Timer Styles with Colors */
+:root {
+  --focus-primary: #6366f1;
+  --focus-secondary: #8b5cf6;
+  --break-primary: #10b981;
+  --break-secondary: #06b6d4;
+  --long-break-primary: #f59e0b;
+  --long-break-secondary: #ef4444;
+  --stopwatch-primary: #14b8a6;
+  --stopwatch-secondary: #06b6d4;
+}
 
-.timer-display { text-align: center; }
-.timer-time { font-size: 48px; font-weight: 900; margin-bottom: 16px; color: var(--primary); }
-.timer-progress { width: 100%; height: 8px; background: var(--border); border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
-.progress-bar { height: 100%; background: var(--primary); transition: width 0.3s ease; border-radius: 4px; }
-.timer-controls { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.timer-container {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.timer-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Theme Colors */
+.theme-focus .timer-panel {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%), var(--panel);
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+.theme-break .timer-panel {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%), var(--panel);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.theme-long-break .timer-panel {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%), var(--panel);
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.theme-stopwatch .timer-panel {
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%), var(--panel);
+  border-color: rgba(20, 184, 166, 0.2);
+}
+
+.timer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.settings-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.settings-btn:hover {
+  background: var(--border);
+  transform: scale(1.1);
+}
+
+/* Settings Panel */
+.settings-panel {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.settings-panel h4 {
+  margin: 0 0 16px 0;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.setting-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+.setting-item label {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.setting-input {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  text-align: center;
+  font-weight: 600;
+}
+
+.setting-item span {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.preset-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.preset-btn {
+  background: var(--border);
+  color: var(--text);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.preset-btn:hover {
+  background: var(--primary);
+  color: var(--primary-contrast);
+}
+
+/* Timer Modes */
+.timer-modes {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 20px;
+  background: var(--bg);
+  padding: 4px;
+  border-radius: 12px;
+}
+
+.timer-types {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.mode-btn, .type-btn {
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.mode-btn:hover, .type-btn:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mode-btn.active {
+  background: var(--primary);
+  color: var(--primary-contrast);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.theme-focus .type-btn.active {
+  background: linear-gradient(135deg, var(--focus-primary), var(--focus-secondary));
+  color: white;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+}
+
+.theme-break .type-btn.active {
+  background: linear-gradient(135deg, var(--break-primary), var(--break-secondary));
+  color: white;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+}
+
+.theme-long-break .type-btn.active {
+  background: linear-gradient(135deg, var(--long-break-primary), var(--long-break-secondary));
+  color: white;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+}
+
+.theme-stopwatch .type-btn.active {
+  background: linear-gradient(135deg, var(--stopwatch-primary), var(--stopwatch-secondary));
+  color: white;
+  box-shadow: 0 4px 16px rgba(20, 184, 166, 0.4);
+}
+
+/* Timer Display */
+.timer-display {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.timer-circle {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.progress-ring {
+  transform: rotate(-90deg);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.progress-track {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 8;
+}
+
+.progress-fill {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.3s ease;
+}
+
+.theme-focus .progress-fill {
+  stroke: url(#focusGradient);
+}
+
+.theme-break .progress-fill {
+  stroke: url(#breakGradient);
+}
+
+.theme-long-break .progress-fill {
+  stroke: url(#longBreakGradient);
+}
+
+.theme-stopwatch .progress-fill {
+  stroke: url(#stopwatchGradient);
+}
+
+.timer-time {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  font-weight: 900;
+  font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+}
+
+.theme-focus .timer-time {
+  background: linear-gradient(135deg, var(--focus-primary), var(--focus-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.theme-break .timer-time {
+  background: linear-gradient(135deg, var(--break-primary), var(--break-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.theme-long-break .timer-time {
+  background: linear-gradient(135deg, var(--long-break-primary), var(--long-break-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.theme-stopwatch .timer-time {
+  background: linear-gradient(135deg, var(--stopwatch-primary), var(--stopwatch-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.timer-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 200px;
+  margin: 0 auto;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.mode-info {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Timer Controls */
+.timer-controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn.large {
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 16px;
+  transition: all 0.2s ease;
+}
+
+.btn.primary.large {
+  background: linear-gradient(135deg, var(--primary), var(--accent-purple));
+  border: none;
+  color: white;
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+}
+
+.btn.primary.large:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4);
+}
+
+.btn.focus-mode {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+}
+
+.btn.focus-mode:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+}
+
+/* Fullscreen Mode */
+.fullscreen-mode {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a8a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.fullscreen-panel {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 32px;
+  padding: 48px;
+  text-align: center;
+  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.3);
+}
+
+.fullscreen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.fs-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+}
+
+.exit-fs-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.2s ease;
+}
+
+.exit-fs-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.fullscreen-mode .timer-time {
+  font-size: 96px;
+  color: white;
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.fullscreen-mode .progress-fill {
+  stroke: white;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+}
+
+.fullscreen-mode .progress-track {
+  stroke: rgba(255, 255, 255, 0.2);
+}
+
+.fullscreen-mode .btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.fullscreen-mode .btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.fullscreen-mode .btn.primary.large {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+  border: none;
+}
+
+/* Add SVG gradients */
+.timer-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    '<svg><defs>
+      <linearGradient id="focusGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      </linearGradient>
+      <linearGradient id="breakGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+      </linearGradient>
+      <linearGradient id="longBreakGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#ef4444;stop-opacity:1" />
+      </linearGradient>
+      <linearGradient id="stopwatchGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#14b8a6;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+      </linearGradient>
+    </defs></svg>';
+  pointer-events: none;
+  z-index: -1;
+}
 
 /* Simplified Task Styles */
 .task-input { display: flex; gap: 8px; margin-bottom: 16px; }
