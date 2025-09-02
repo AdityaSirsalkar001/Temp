@@ -758,14 +758,139 @@ html[data-theme="dark"] .panel:hover {
   border: none;
 }
 
-/* Additional visual effects */
+/* Additional visual effects and animations */
 @keyframes pulseGlow {
   0%, 100% { opacity: 0.8; }
   50% { opacity: 1; }
 }
 
+@keyframes timerPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@keyframes progressSpin {
+  0% { transform: rotate(-90deg); }
+  100% { transform: rotate(270deg); }
+}
+
+@keyframes buttonSuccess {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
 .timer-circle:hover .progress-fill {
   animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Running timer animation */
+.timer-container.running .timer-circle {
+  animation: timerPulse 4s ease-in-out infinite;
+}
+
+.timer-container.running .progress-ring {
+  filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.6));
+}
+
+.timer-container.theme-break.running .progress-ring {
+  filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.6));
+}
+
+.timer-container.theme-long-break.running .progress-ring {
+  filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.6));
+}
+
+.timer-container.theme-stopwatch.running .progress-ring {
+  filter: drop-shadow(0 0 20px rgba(20, 184, 166, 0.6));
+}
+
+/* Button click feedback */
+.btn:active {
+  animation: buttonSuccess 0.2s ease-out;
+}
+
+/* Settings panel animation */
+.settings-panel {
+  animation: slideDown 0.3s ease-out;
+  transform-origin: top;
+}
+
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scaleY(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+/* Countdown warning styles */
+.timer-time.warning {
+  animation: urgentPulse 1s ease-in-out infinite;
+  color: #ef4444 !important;
+}
+
+@keyframes urgentPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.6));
+  }
+  50% {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.8));
+  }
+}
+
+/* Progress fill glow effect */
+.progress-fill {
+  filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.4));
+  transition: all 0.3s ease;
+}
+
+.theme-break .progress-fill {
+  filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.4));
+}
+
+.theme-long-break .progress-fill {
+  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.4));
+}
+
+.theme-stopwatch .progress-fill {
+  filter: drop-shadow(0 0 8px rgba(20, 184, 166, 0.4));
+}
+
+/* Hover effects for better interactivity */
+.type-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.mode-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Focus indicator for accessibility */
+.btn:focus-visible,
+.mode-btn:focus-visible,
+.type-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Completion celebration */
+@keyframes celebrate {
+  0% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.1) rotate(5deg); }
+  50% { transform: scale(1.2) rotate(-5deg); }
+  75% { transform: scale(1.1) rotate(3deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.timer-container.completed .timer-circle {
+  animation: celebrate 0.6s ease-out;
 }
 
 /* Simplified Task Styles */
