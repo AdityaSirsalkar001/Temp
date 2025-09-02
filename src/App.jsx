@@ -46,8 +46,8 @@ export default function App() {
                 <path d="M12 3c4.97 0 9 4.03 9 9s-4.03 9-9 9S3 16.97 3 12 7.03 3 12 3z" fill="url(#g)" opacity="0.2"/>
                 <path d="M6 12c2.5-2.2 5.5-2.2 8 0 2.5 2.2 5.5 2.2 8 0" stroke="url(#g)" strokeWidth="2" strokeLinecap="round"/>
               </svg>
-            </span> 
-            FocusFlow
+            </span>
+            {' '}FocusFlow
           </div>
           <div className="toolbar">
             <ThemeToggle />
