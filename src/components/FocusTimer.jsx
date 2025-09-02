@@ -272,12 +272,35 @@ export default function FocusTimer() {
               <div className="timer-display">
                 <div className="timer-circle">
                   <svg className="progress-ring" width="200" height="200">
+                    <defs>
+                      <linearGradient id="focusGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#6366f1" />
+                        <stop offset="100%" stopColor="#8b5cf6" />
+                      </linearGradient>
+                      <linearGradient id="breakGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#10b981" />
+                        <stop offset="100%" stopColor="#06b6d4" />
+                      </linearGradient>
+                      <linearGradient id="longBreakGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#f59e0b" />
+                        <stop offset="100%" stopColor="#ef4444" />
+                      </linearGradient>
+                      <linearGradient id="stopwatchGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#14b8a6" />
+                        <stop offset="100%" stopColor="#06b6d4" />
+                      </linearGradient>
+                    </defs>
                     <circle className="progress-track" cx="100" cy="100" r="90"></circle>
-                    <circle 
-                      className="progress-fill" 
-                      cx="100" 
-                      cy="100" 
+                    <circle
+                      className="progress-fill"
+                      cx="100"
+                      cy="100"
                       r="90"
+                      stroke={`url(#${
+                        modeType === 'stopwatch' ? 'stopwatchGradient' :
+                        mode === 'focus' ? 'focusGradient' :
+                        mode === 'short' ? 'breakGradient' : 'longBreakGradient'
+                      })`}
                       style={{
                         strokeDasharray: `${2 * Math.PI * 90}`,
                         strokeDashoffset: `${2 * Math.PI * 90 * (1 - progress)}`,
