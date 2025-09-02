@@ -646,30 +646,30 @@ html[data-theme="dark"] .panel:hover {
 }
 
 .btn.primary.large {
-  background: linear-gradient(135deg, var(--primary), var(--accent-purple));
+  background: linear-gradient(135deg, var(--success), var(--accent-teal));
   border: none;
   color: white;
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
 }
 
 .btn.primary.large:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 12px 32px rgba(16, 185, 129, 0.4);
 }
 
 .btn.focus-mode {
-  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  background: linear-gradient(135deg, var(--primary), var(--accent-purple));
   color: white;
   border: none;
   padding: 12px 20px;
   border-radius: 12px;
   font-weight: 600;
-  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
 }
 
 .btn.focus-mode:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
 }
 
 /* Fullscreen Mode */
