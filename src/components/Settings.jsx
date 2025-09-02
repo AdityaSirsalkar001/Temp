@@ -1,5 +1,6 @@
 import React from 'react';
 import { usePersistentState } from '../lib/hooks.js';
+import { useAuth } from '../lib/AuthProvider.jsx';
 import ThemeToggle from './ThemeToggle.jsx';
 
 export default function Settings() {
