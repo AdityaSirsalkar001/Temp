@@ -163,6 +163,41 @@ html[data-theme="dark"] .planner-cell:focus { background: rgba(96,165,250,.10); 
 .progress-bar { height: 100%; background: var(--primary); transition: width 0.3s ease; border-radius: 4px; }
 .timer-controls { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
+/* Simplified Task Styles */
+.task-input { display: flex; gap: 8px; margin-bottom: 16px; }
+.task-input .input { flex: 1; }
+.task-filters { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; }
+.task-filters .select { min-width: 120px; }
+.btn.small { padding: 6px 10px; font-size: 12px; }
+
+.task-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; max-height: 300px; overflow-y: auto; }
+.task-item { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel); }
+.task-content { display: flex; align-items: center; gap: 10px; flex: 1; }
+.task-checkbox { margin: 0; }
+.task-text { border: none; background: transparent; color: var(--text); flex: 1; padding: 4px 0; }
+.task-text.completed { text-decoration: line-through; color: var(--muted); }
+.btn-delete { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 18px; padding: 4px; line-height: 1; }
+.btn-delete:hover { background: var(--danger); color: white; border-radius: 4px; }
+
+/* Simplified Notes Styles */
+.notes-header { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+.search-input { margin-bottom: 12px; }
+.note-editor { margin-bottom: 16px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); }
+.note-title { margin-bottom: 8px; font-weight: 600; }
+.note-content { margin-bottom: 8px; resize: vertical; min-height: 80px; }
+.note-actions { display: flex; justify-content: space-between; align-items: center; }
+
+.notes-list { display: grid; gap: 6px; max-height: 250px; overflow-y: auto; }
+.note-item { padding: 8px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+.note-item:hover { background: var(--border); }
+.note-item.active { background: var(--primary); color: var(--primary-contrast); border-color: var(--primary); }
+.note-preview-title { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+.note-preview-content { font-size: 12px; color: var(--muted); }
+.note-item.active .note-preview-content { color: var(--primary-contrast); opacity: 0.8; }
+
+.empty-state { text-align: center; padding: 20px; color: var(--muted); font-style: italic; }
+.text-center { text-align: center; }
+
 /* Badge styles */
 .badge { display: inline-block; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--panel); font-weight: 600; font-size: 12px; color: var(--muted); }
 .badge.success { background: var(--success); border-color: var(--success); color: #fff; }
