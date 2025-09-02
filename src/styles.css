@@ -548,35 +548,14 @@ body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI
   border: none;
 }
 
-/* Add SVG gradients */
-.timer-panel::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background:
-    '<svg><defs>
-      <linearGradient id="focusGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
-        <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
-      </linearGradient>
-      <linearGradient id="breakGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
-        <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
-      </linearGradient>
-      <linearGradient id="longBreakGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
-        <stop offset="100%" style="stop-color:#ef4444;stop-opacity:1" />
-      </linearGradient>
-      <linearGradient id="stopwatchGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:#14b8a6;stop-opacity:1" />
-        <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
-      </linearGradient>
-    </defs></svg>';
-  pointer-events: none;
-  z-index: -1;
+/* Additional visual effects */
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+.timer-circle:hover .progress-fill {
+  animation: pulseGlow 2s ease-in-out infinite;
 }
 
 /* Simplified Task Styles */
