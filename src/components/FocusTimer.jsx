@@ -150,78 +150,51 @@ export default function FocusTimer() {
   function stopStopwatch() { if (swElapsed > 0 && swActive) { incTodaySessions(); } setSwRunning(false); setSwElapsed(0); setSwActive(false); if (loadLS('settings:sound', true)) playStop(); }
 
   return (
-    <div ref={wrapRef} className={isFs ? 'focus-fullscreen' : ''}>
-      <div className="panel focus-accent">
-        <h3 className="panel-title">Focus</h3>
+    <div ref={wrapRef} className={isFs ? 'focus-fullscreen' : 'focus-compact'}>
+      <div className="panel">
+        <h3 className="panel-title">Focus Timer</h3>
         <div className="section">
-          {!isFs && (
-            <div className="row center" style={{ gap: 8 }}>
-              <button className={`mode-btn ${modeType === 'timer' ? 'active' : ''}`} onClick={() => setModeType('timer')}>Timer</button>
-              <button className={`mode-btn ${modeType === 'stopwatch' ? 'active' : ''}`} onClick={() => setModeType('stopwatch')}>Stopwatch</button>
-            </div>
-          )}
+          <div className="timer-modes">
+            <button className={`mode-btn ${modeType === 'timer' ? 'active' : ''}`} onClick={() => setModeType('timer')}>Timer</button>
+            <button className={`mode-btn ${modeType === 'stopwatch' ? 'active' : ''}`} onClick={() => setModeType('stopwatch')}>Stopwatch</button>
+          </div>
 
           {modeType === 'timer' && (
             <>
-              {!isFs && (
-                <div className="row center" style={{ gap: 6 }}>
-                  <button className={`mode-btn focus-variant ${mode === 'focus' ? 'active' : ''}`} onClick={() => switchMode('focus')} aria-pressed={mode === 'focus'}>Focus</button>
-                  <button className={`mode-btn short-variant ${mode === 'short' ? 'active' : ''}`} onClick={() => switchMode('short')} aria-pressed={mode === 'short'}>Short</button>
-                  <button className={`mode-btn long-variant ${mode === 'long' ? 'active' : ''}`} onClick={() => switchMode('long')} aria-pressed={mode === 'long'}>Long</button>
+              <div className="timer-types">
+                <button className={`type-btn ${mode === 'focus' ? 'active' : ''}`} onClick={() => switchMode('focus')}>Focus ({settings.focusMin}m)</button>
+                <button className={`type-btn ${mode === 'short' ? 'active' : ''}`} onClick={() => switchMode('short')}>Break ({settings.shortBreakMin}m)</button>
+              </div>
+              <div className="timer-display">
+                <div className="timer-time">{fmt(remaining)}</div>
+                <div className="timer-progress">
+                  <div className="progress-bar" style={{ width: `${(remaining / total) * 100}%` }}></div>
                 </div>
-              )}
-              <div className={`timer-wrap ${mode === 'focus' ? 'accent-blue' : mode === 'short' ? 'accent-amber' : 'accent-purple'}`}>
-                <svg className="timer-ring" viewBox="0 0 220 220" width={isFs ? 300 : 240} height={isFs ? 300 : 240} aria-label={`${title} timer`}>
-                  <circle cx="110" cy="110" r={radius} stroke="var(--border)" strokeWidth="14" fill="none" />
-                  <circle cx="110" cy="110" r={radius} stroke="currentColor" strokeWidth="14" fill="none" strokeDasharray={dash} strokeDashoffset={offset} strokeLinecap="round" transform="rotate(-90 110 110)" />
-                  <text x="110" y="118" textAnchor="middle" fontSize={isFs ? 44 : 36} fontWeight="800" fill="currentColor">{fmt(remaining)}</text>
-                </svg>
-                <div className="row center">
+                <div className="timer-controls">
                   {!running ? (
-                    <button className="btn success" onClick={start}>Start</button>
+                    <button className="btn success" onClick={start}>Start Focus</button>
                   ) : (
                     <button className="btn secondary" onClick={pause}>Pause</button>
                   )}
-                  {!isFs && <button className="btn secondary" onClick={reset}>Reset</button>}
-                  <button className="btn" onClick={isFs ? () => document.exitFullscreen?.() : toggleFullscreen}>{isFs ? 'Exit' : 'Fullscreen'}</button>
-                  {isFs && <button className="btn danger" onClick={stopTimer}>Stop</button>}
+                  <button className="btn secondary" onClick={reset}>Reset</button>
                 </div>
-                {!isFs && (
-                  <div className="row between">
-                    <span className="small">{title}</span>
-                    <span className="small">Round {round} / {settings.roundsUntilLong}</span>
-                  </div>
-                )}
               </div>
             </>
           )}
 
           {modeType === 'stopwatch' && (
-            <div className="timer-wrap accent-teal">
-              <svg className="timer-ring" viewBox="0 0 220 220" width={isFs ? 300 : 240} height={isFs ? 300 : 240} aria-label={`Stopwatch`}>
-                <circle cx="110" cy="110" r={radius} stroke="var(--border)" strokeWidth="14" fill="none" />
-                <circle cx="110" cy="110" r={radius} stroke="currentColor" strokeWidth="14" fill="none" strokeDasharray={dash} strokeDashoffset={offset} strokeLinecap="round" transform="rotate(-90 110 110)" />
-                <text x="110" y="118" textAnchor="middle" fontSize={isFs ? 44 : 36} fontWeight="800" fill="currentColor">{fmt(swElapsed)}</text>
-              </svg>
-              <div className="row center">
+            <div className="timer-display">
+              <div className="timer-time">{fmt(swElapsed)}</div>
+              <div className="timer-controls">
                 {!swRunning ? (
                   <button className="btn success" onClick={swStart}>Start</button>
                 ) : (
                   <button className="btn secondary" onClick={swPause}>Pause</button>
                 )}
-                {!isFs && <button className="btn secondary" onClick={swReset}>Reset</button>}
-                <button className="btn" onClick={isFs ? () => document.exitFullscreen?.() : toggleFullscreen}>{isFs ? 'Exit' : 'Fullscreen'}</button>
-                {isFs && <button className="btn danger" onClick={stopStopwatch}>Stop</button>}
+                <button className="btn secondary" onClick={swReset}>Reset</button>
               </div>
-              {!isFs && (
-                <div className="row between">
-                  <span className="small">Stopwatch</span>
-                  <span className="small">Counts focus stats while running</span>
-                </div>
-              )}
             </div>
           )}
-
         </div>
       </div>
     </div>
