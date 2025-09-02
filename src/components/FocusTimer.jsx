@@ -307,7 +307,9 @@ export default function FocusTimer() {
                       }}
                     ></circle>
                   </svg>
-                  <div className="timer-time">{fmt(remaining)}</div>
+                  <div className={`timer-time ${modeType === 'timer' && remaining <= 60 && remaining > 0 ? 'warning' : ''}`}>
+                    {fmt(remaining)}
+                  </div>
                 </div>
                 
                 {!isFs && (
