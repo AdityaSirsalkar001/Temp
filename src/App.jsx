@@ -1,5 +1,6 @@
 import React from 'react';
 import FocusTimer from './components/FocusTimer.jsx';
+import TodoList from './components/TodoList.jsx';
 import ThemeToggle from './components/ThemeToggle.jsx';
 import { AuthProvider } from './lib/AuthProvider.jsx';
 
@@ -15,9 +16,16 @@ export default function App() {
         </header>
 
         <main className="main-content">
-          <h1 className="main-title">Focus Timer Test</h1>
-          <div className="focus-section">
-            <FocusTimer />
+          <h1 className="main-title">Your calm space to get things done</h1>
+          
+          <div className="main-grid">
+            <div className="focus-section">
+              <FocusTimer />
+            </div>
+            
+            <div className="tasks-section">
+              <TodoList />
+            </div>
           </div>
         </main>
       </div>
