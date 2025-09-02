@@ -1,8 +1,10 @@
 import React from 'react';
 import { usePersistentState } from '../lib/hooks.js';
+import { useAuth } from '../lib/AuthProvider.jsx';
 import ThemeToggle from './ThemeToggle.jsx';
 
 export default function Settings() {
+  const { mode } = useAuth();
   const [settings, setSettings] = usePersistentState('timer:settings', {
     focusMin: 25,
     shortBreakMin: 5,
@@ -48,6 +50,27 @@ export default function Settings() {
     <div className="panel">
       <h3 className="panel-title">Settings</h3>
       <div className="section">
+        <div className="panel compact">
+          <h4 className="panel-title">Authentication</h4>
+          <div className="settings-table">
+            <div className="settings-row">
+              <div className="settings-label">Connection Status</div>
+              <div className="settings-control">
+                <span className={`badge ${mode === 'supabase' ? 'success' : 'warning'}`}>
+                  {mode === 'supabase' ? '✓ Supabase Connected' : '⚠ Local Mode (No Supabase)'}
+                </span>
+              </div>
+            </div>
+            {mode === 'local' && (
+              <div className="settings-row">
+                <div className="settings-label">Info</div>
+                <div className="settings-control">
+                  <span className="small">Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to connect Supabase</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
         <div className="panel compact">
           <h4 className="panel-title">Appearance</h4>
           <div className="row"><ThemeToggle /></div>
